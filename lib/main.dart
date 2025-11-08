@@ -3,16 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fish_detection_v2/screens/splash_screen.dart'; 
 import 'firebase_options.dart';
 import 'package:fish_detection_v2/services/auth_service.dart'; 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await AuthService.signInAnonymously();
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

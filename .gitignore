@@ -46,3 +46,5 @@ app.*.map.json
 
 # Firebase configuration file
 lib/firebase_options.dart
+# File environment, berisi rahasia
+.env

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.18.118:8080/predict';
+  static final String _baseUrl = dotenv.env['API_BASE_URL']!;
 
   static Future<Map<String, dynamic>> processImage({
     required File imageFile,
