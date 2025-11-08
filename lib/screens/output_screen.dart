@@ -40,21 +40,69 @@ class _OutputScreenState extends State<OutputScreen> {
   }
 
   Widget _buildRecapTable() {
+    final List boxesData = widget.apiResult['boxes'] ?? [];
     final Map<String, dynamic> recap = widget.apiResult['recapitulation'] ?? {};
-    if (recap.isEmpty) {
-      return const Text('Tidak ada ikan yang terdeteksi.');
+    final totalDetected = widget.apiResult['total_detected'] ?? 0;
+
+    if (totalDetected == 0) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Center(child: Text('Tidak ada ikan yang terdeteksi.')),
+      );
     }
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('Jenis Ikan')),
-        DataColumn(label: Text('Jumlah')),
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch, // Use stretch for full width
+      children: [
+        // BAGIAN 1: DETAIL SETIAP BOUNDING BOX DALAM BENTUK TABEL
+        const Text(
+          'Detail Deteksi:',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 8),
+        DataTable(
+          columnSpacing: 20, // Adjust spacing between columns
+          columns: const [
+            DataColumn(label: Text('#', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('Jenis Ikan', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('Keyakinan', style: TextStyle(fontWeight: FontWeight.bold))),
+          ],
+          rows: boxesData.asMap().entries.map((entry) {
+            final int index = entry.key;
+            final data = entry.value;
+            final String label = data['label'];
+            final double score = data['score'];
+            final String confidence = '${(score * 100).toStringAsFixed(0)}%';
+
+            return DataRow(cells: [
+              DataCell(Text('${index + 1}')), // Column for the number
+              DataCell(Text(label)),          // Column for the fish type
+              DataCell(Text(confidence)),     // Column for the confidence score
+            ]);
+          }).toList(),
+        ),
+
+        const SizedBox(height: 24), // Spasi pemisah
+
+        // BAGIAN 2: TOTAL REKAPITULASI (seperti sebelumnya)
+        const Text(
+          'Total Keseluruhan:',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 8),
+        DataTable(
+          columns: const [
+            DataColumn(label: Text('Jenis Ikan', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('Jumlah Total', style: TextStyle(fontWeight: FontWeight.bold))),
+          ],
+          rows: recap.entries.map((entry) {
+            return DataRow(cells: [
+              DataCell(Text(entry.key)),
+              DataCell(Text(entry.value.toString())),
+            ]);
+          }).toList(),
+        ),
       ],
-      rows: recap.entries.map((entry) {
-        return DataRow(cells: [
-          DataCell(Text(entry.key)),
-          DataCell(Text(entry.value.toString())),
-        ]);
-      }).toList(),
     );
   }
 
@@ -193,11 +241,10 @@ Future<void> _shareImage() async {
       ),
     );
   }
-  Widget _buildImageWithBoxes() {
+Widget _buildImageWithBoxes() {
     final List boxesData = widget.apiResult['boxes'] ?? [];
     final Map<String, dynamic> originalSize = widget.apiResult['original_image_size'];
     final double originalWidth = originalSize['width'].toDouble();
-
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -207,31 +254,41 @@ Future<void> _shareImage() async {
         return Stack(
           children: [
             Image.file(widget.originalImageFile),
-            ...boxesData.map((data) {
+            // UBAH .map MENJADI .asMap().entries.map UNTUK MENDAPATKAN INDEX
+            ...boxesData.asMap().entries.map((entry) { 
+              final int index = entry.key;   // Ini adalah nomor urut (mulai dari 0)
+              final data = entry.value;    // Ini adalah data kotak seperti sebelumnya
+
               final List<dynamic> box = data['box'];
-              final String label = data['label'];
-              final double score = data['score'];
+              // Kita tidak butuh label dan score di sini lagi, tapi tetap bisa diambil jika perlu
+              // final String label = data['label'];
+              // final double score = data['score'];
 
               final double left = box[0] * scaleX;
               final double top = box[1] * scaleY;
               final double width = (box[2] - box[0]) * scaleX;
               final double height = (box[3] - box[1]) * scaleY;
 
+              // TAMPILKAN NOMOR URUT (index + 1)
               return Positioned(
                 left: left,
                 top: top,
                 width: width,
                 height: height,
                 child: Container(
-                  decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 2)),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.yellow, width: 2)), // Ganti warna agar beda
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Container(
-                      color: Colors.green.withOpacity(0.7),
-                      padding: const EdgeInsets.all(2),
+                      color: Colors.yellow.withOpacity(0.8),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       child: Text(
-                        '$label ${(score * 100).toStringAsFixed(0)}%',
-                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                        '${index + 1}', // Tampilkan nomor urut (1, 2, 3, ...)
+                        style: const TextStyle(
+                          color: Colors.black, 
+                          fontSize: 12, 
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
