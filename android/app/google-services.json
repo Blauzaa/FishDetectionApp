@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "833700579721",
+    "project_id": "fishdetection-35cc5",
+    "storage_bucket": "fishdetection-35cc5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833700579721:android:91747e233960d6945e7958",
+        "android_client_info": {
+          "package_name": "com.example.fish_detection_v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3ZJmB2oyS9mLhhJNdBAb6m1ECbZuPNmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833700579721:android:b3ea9423d4ac2b0b5e7958",
+        "android_client_info": {
+          "package_name": "com.example.fishdetection"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3ZJmB2oyS9mLhhJNdBAb6m1ECbZuPNmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
