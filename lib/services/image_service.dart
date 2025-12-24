@@ -38,7 +38,7 @@ class ImageService {
       }
 
       // Folder tujuan di galeri
-      final String folderPath = '/storage/emulated/0/Pictures/FishDetection';
+      const String folderPath = '/storage/emulated/0/Pictures/FishDetection';
       final dir = Directory(folderPath);
       if (!(await dir.exists())) {
         await dir.create(recursive: true);

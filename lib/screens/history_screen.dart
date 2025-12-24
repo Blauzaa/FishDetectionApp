@@ -74,7 +74,7 @@ return Scaffold(
                     style: TextStyle(color: Colors.grey.shade800, height: 1.4),
                   ),
                   onTap: () {
-                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => HistoryDetailScreen(userId: userId!, historyId: doc.id)));
+                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => HistoryDetailScreen(userId: userId, historyId: doc.id)));
                   },
                 ),
               );
